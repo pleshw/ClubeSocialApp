@@ -4,7 +4,7 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IHttpClientFactory ClientFactory
 @inject SpotifyJSInterop SpotifyJSInterop
-
+@inject SpotifyInteropService SpotifyInteropService
 
 @if (string.IsNullOrEmpty(DeviceId) && !string.IsNullOrEmpty(AccessToken))
 {
@@ -71,6 +71,7 @@ else
 
         if (!firstRender)
         {
+            AwaitCommandComplete = false;
             return;
         }
 
@@ -80,9 +81,15 @@ else
         }
 
         await SpotifyAuthCheck();
-        await InitSpotifyPlayer();
-        await UpdatePlayerTrack();
-        await InvokeAsync(StateHasChanged);
+        // await InitSpotifyPlayer();
+
+        if (AccessToken is not null)
+        {
+            await SpotifyInteropService.InitializePlayer(AccessToken, SpotifyDeviceName);
+            await UpdatePlayerTrack();
+            await InvokeAsync(StateHasChanged);
+        }
+
         AwaitCommandComplete = false;
     }
 

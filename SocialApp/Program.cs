@@ -47,6 +47,8 @@ app.Run();
 
 static void ConfigureServices( IServiceCollection services , IConfiguration configuration )
 {
+    services.AddSingleton<SpotifyStateService>();
+    services.AddScoped<SpotifyInteropService>();
     services.AddOptions();
     services.AddHttpContextAccessor();
     services.AddSession();
