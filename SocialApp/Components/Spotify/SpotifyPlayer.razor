@@ -1,0 +1,40 @@
+﻿<div class="container-fluid row justify-content-between align-content-center bg-spotify-black w-100 m-0 p-2 shadow" style="min-width:400px !important;">
+    <div class="container row col-10 align-content-center justify-content-between align-items-center h-100">
+        <div class="container col-6 h-100">
+            <a class="row h-100" href="https://open.spotify.com/" target="_blank">
+                <img class="img-fluid p-3" style="min-width: 100px;image-rendering: optimizeQuality!important;" src="icons/spotify-logo-green-nobg.png" />
+            </a>
+        </div>
+        <div class="col-6">
+            @if (PlayerCurrentTrack != null)
+            {
+                <a target="_blank" class="text-decoration-none" href="@PlayerCurrentTrack.Uri">
+                    <span style="font-size: 1.2em;" class="text-white fw-bold">@PlayerCurrentTrack.Name</span>
+                </a>
+            }
+        </div>
+    </div>
+    <div class="row col-2 justify-content-start align-items-center">
+        <div class="row col-12 justify-content-center">
+            <SpotifyPlayPauseButton SpotifyWrapperComponent="SpotifyWrapperComponent" Loading="Loading" State="@(IsPlaying ? "playing" : "")"></SpotifyPlayPauseButton>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public required bool Loading { get; set; }
+
+    [Parameter]
+    public required string State { get; set; }
+
+    [Parameter]
+    public required bool IsPlaying { get; set; }
+
+    [Parameter]
+    public required SpotifyTrack PlayerCurrentTrack { get; set; }
+
+    [Parameter]
+    public required SpotifyWrapper? SpotifyWrapperComponent { get; set; }
+}
