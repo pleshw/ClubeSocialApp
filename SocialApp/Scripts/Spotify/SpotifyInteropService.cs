@@ -5,9 +5,9 @@ namespace SocialApp.Scripts.Spotify;
 public class SpotifyInteropService( IJSRuntime jsRuntime, SpotifyStateService stateService )
 {
     private readonly IJSRuntime _jsRuntime = jsRuntime;
-    private readonly SpotifyStateService StateService = stateService;
+    public readonly SpotifyStateService StateService = stateService;
 
-    public IJSObjectReference? SpotifyModule { get; private set; }
+    public IJSObjectReference? SpotifyModule { get; set; }
 
     public async Task<IJSObjectReference> GetSpotifyModule()
     {
@@ -26,9 +26,29 @@ public class SpotifyInteropService( IJSRuntime jsRuntime, SpotifyStateService st
         }
     }
 
+    public async Task DisconnectPlayer()
+    {
+        SpotifyModule ??= await GetSpotifyModule();
+        await SpotifyModule.InvokeVoidAsync( "disconnectSpotifyPlayer" , StateService.SpotifyPlayerObject );
+    }
+
     public async Task Play( string deviceName )
     {
         SpotifyModule ??= await GetSpotifyModule();
         await SpotifyModule.InvokeVoidAsync( "play" , StateService.SpotifyPlayerObject , deviceName );
+    }
+
+    public async Task Reset()
+    {
+        await DisconnectPlayer();
+        if (SpotifyModule is not null)
+        {
+            await SpotifyModule.DisposeAsync();
+        }
+
+        if (StateService.SpotifyPlayerObject is not null)
+        {
+            await StateService.SpotifyPlayerObject.DisposeAsync();
+        }
     }
 }

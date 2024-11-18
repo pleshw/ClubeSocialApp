@@ -5,6 +5,9 @@
 @inject IHttpClientFactory ClientFactory
 @inject SpotifyJSInterop SpotifyJSInterop
 @inject SpotifyInteropService SpotifyInteropService
+@inject PageRefreshService RefreshService
+
+@implements IDisposable
 
 @if (string.IsNullOrEmpty(DeviceId) && !string.IsNullOrEmpty(AccessToken))
 {
@@ -32,7 +35,7 @@ else if (userSpotifyClaim == null || !userSpotifyClaim.IsAuthenticated)
 else
 {
     <div class="container-fluid justify-content-center align-content-center w-100 m-0 p-5">
-        <SpotifyPlayer SpotifyWrapperComponent="_self" PlayerCurrentTrack="PlayerCurrentTrack" Loading="AwaitCommandComplete" IsPlaying="IsPlaying"></SpotifyPlayer>
+        <SpotifyPlayer SpotifyInteropService="SpotifyInteropService" SpotifyWrapperComponent="_self" PlayerCurrentTrack="PlayerCurrentTrack" Loading="AwaitCommandComplete" IsPlaying="IsPlaying"></SpotifyPlayer>
     </div>
 }
 
@@ -62,7 +65,22 @@ else
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
+        RefreshService.OnPageRefresh += HandlePageRefreshAsync;
+
         _self = this;
+    }
+
+    private async void HandlePageRefreshAsync(object? sender, bool isInitialLoad)
+    {
+        if (isInitialLoad)
+        {
+            await SpotifyAuthCheck();
+            if (AccessToken is not null)
+            {
+                await SpotifyInteropService.InitializePlayer(AccessToken, SpotifyDeviceName);
+            }
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -75,17 +93,10 @@ else
             return;
         }
 
-        if (SpotifyModule is null)
-        {
-            SpotifyModule = await JS.InvokeAsync<IJSObjectReference>("import", "./js/spotify.js");
-        }
-
         await SpotifyAuthCheck();
-        // await InitSpotifyPlayer();
 
         if (AccessToken is not null)
         {
-            await SpotifyInteropService.InitializePlayer(AccessToken, SpotifyDeviceName);
             await UpdatePlayerTrack();
             await InvokeAsync(StateHasChanged);
         }
@@ -275,5 +286,10 @@ else
         {
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    public void Dispose()
+    {
+
     }
 }

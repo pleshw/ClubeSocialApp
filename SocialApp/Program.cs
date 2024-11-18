@@ -5,8 +5,9 @@ using SocialApp.Components;
 using SocialApp.Scripts.Spotify;
 using SocialApp.Wrappers;
 using SocialApp.Wrappers.Spotify;
+using SocialApp.Scripts.Blazor;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder? builder = WebApplication.CreateBuilder( args );
 
 // Add services to the container.
 builder.Services
@@ -16,12 +17,12 @@ builder.Services
 
 ConfigureServices( builder.Services , builder.Configuration );
 
-var app = builder.Build();
+WebApplication? app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler( "/Error" , createScopeForErrors: true );
     app.UseHsts();
 }
 
@@ -47,6 +48,7 @@ app.Run();
 
 static void ConfigureServices( IServiceCollection services , IConfiguration configuration )
 {
+    services.AddScoped<PageRefreshService>();
     services.AddSingleton<SpotifyStateService>();
     services.AddScoped<SpotifyInteropService>();
     services.AddOptions();
