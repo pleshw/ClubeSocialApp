@@ -14,11 +14,14 @@
             }
         </div>
     </div>
-    <div class="row col-2 justify-content-start align-items-center">
-        <div class="row col-12 justify-content-center">
-            <SpotifyPlayPauseButton SpotifyInteropService="SpotifyInteropService" SpotifyWrapperComponent="SpotifyWrapperComponent" Loading="Loading" State="@(IsPlaying ? "playing" : "")"></SpotifyPlayPauseButton>
+    @if (CanInteractWithPlayer)
+    {
+        <div class="row col-2 justify-content-start align-items-center">
+            <div class="row col-12 justify-content-center">
+                <SpotifyPlayPauseButton SpotifyInteropService="SpotifyInteropService" SpotifyWrapperComponent="SpotifyWrapperComponent" Loading="Loading" State="@(IsPlaying ? "playing" : "")"></SpotifyPlayPauseButton>
+            </div>
         </div>
-    </div>
+    }
 </div>
 
 
@@ -40,4 +43,7 @@
 
     [Parameter]
     public required SpotifyInteropService SpotifyInteropService { get; set; }
+
+    [Parameter]
+    public required bool CanInteractWithPlayer { get; set; }
 }

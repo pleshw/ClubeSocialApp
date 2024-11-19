@@ -43,12 +43,6 @@ export function setSpotifyPlayerListeners(spotifyPlayer) {
     }));
 }
 
-export async function updateStateSpotifyPlayer(spotifyPlayer) {
-    const playerState = await DOMTools.handlePromiseWithTimeout(spotifyPlayer.getCurrentState());
-
-    DotNet.invokeMethodAsync('SocialApp', 'SpotifyStateHasChanged', playerState);
-}
-
 export async function connectSpotifyPlayer(spotifyPlayer) {
     spotifyPlayer.connect().then(success => {
         if (success) {

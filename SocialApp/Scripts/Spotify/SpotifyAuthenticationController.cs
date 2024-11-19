@@ -14,7 +14,7 @@ public class SpotifyAuthenticationController : Controller
         // Trigger the Spotify OAuth2 authentication flow.
         var properties = new AuthenticationProperties
         {
-            RedirectUri = "/" ,
+            RedirectUri = "/?source=spotify-challenge" ,
         };
 
         return Challenge(properties, "Spotify");

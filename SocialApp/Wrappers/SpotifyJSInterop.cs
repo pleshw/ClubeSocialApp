@@ -18,11 +18,6 @@ public class SpotifyJSInterop
         return await spotifyModule.InvokeAsync<IJSObjectReference>( "createSpotifyPlayer" , accessToken, deviceName );
     }
 
-    public async Task<IJSObjectReference?> UpdateStateSpotifyPlayer( string accessToken , IJSObjectReference spotifyModule )
-    {
-        return await spotifyModule.InvokeAsync<IJSObjectReference>( "updateStateSpotifyPlayer" , accessToken );
-    }
-
     public async Task SetSpotifyPlayerListeners( IJSObjectReference spotifyModule, IJSObjectReference spotifyPlayer )
     {
         await spotifyModule.InvokeVoidAsync( "setSpotifyPlayerListeners" , spotifyPlayer );
